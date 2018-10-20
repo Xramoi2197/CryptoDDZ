@@ -232,15 +232,22 @@ namespace CryptoDDZ
                 numerable += numer2[i] + " ";
             }
             WriteResult?.Invoke(numerable);
-            for (int i = 0; i < _m; i++)
+            bool flag = false;
+            for (int j = 1; j < _k + 1; j++)
             {
-                for (int j = 1; j < _k + 1; j++)
+                for (int i = 1; i < _m; i++)
                 {
                     // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if (numer1[i] == numer2[j])
                     {
                         J = i;
                         I = j;
+                        flag = true;
+                        break;
+                    }
+                    if (flag)
+                    {
+                        break;
                     }
                 }
             }
