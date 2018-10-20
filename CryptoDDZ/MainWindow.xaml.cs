@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace CryptoDDZ
 {
@@ -78,9 +79,9 @@ namespace CryptoDDZ
                     DataGrid.ItemsSource = _rowExs;
                     break;
                 }
-                case "Shennon":
+                case "Shenks":
                 {
-                    _info = "Shennon info";
+                    _info = Properties.Resources.Shenks;
                     _parameters.Add("p", string.Empty);
                     _parameters.Add("a", string.Empty);
                     _parameters.Add("b", string.Empty);
@@ -105,20 +106,26 @@ namespace CryptoDDZ
             InfoBox.Text = _info;
         }
 
-        private void DataGrid_OnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)//Исправить баг с переключением мышью
-        {        
+        private void DataGrid_OnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {   
+            
             var grid = sender as DataGrid;
-            var item = grid?.CurrentItem as DataGridRowEx;
-            if (e.EditAction == DataGridEditAction.Cancel || item == null)
+            var text = e.EditingElement as TextBox;
+            var item = grid?.SelectedItem as DataGridRowEx;
+            string variable = item?.Variable;
+            if (e.EditAction == DataGridEditAction.Cancel || item == null || text == null)
             {
                 return;
             }
-            var text = e.EditingElement as TextBox;
-            _parameters[item.Variable] = text?.Text;
-            int count = grid.Items.Count;
-            if (e.Row.GetIndex() == count - 1)
+            if (e.EditAction == DataGridEditAction.Commit)
             {
-                DoButton.Focus();
+                
+                _parameters[variable] = text?.Text;
+                int count = grid.Items.Count;
+                if (e.Row.GetIndex() == count - 1)
+                {
+                    DoButton.Focus();
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CryptoDDZ
 {
@@ -26,7 +27,7 @@ namespace CryptoDDZ
                     }
                     break;
                 }
-                case "Shennon":
+                case "Shenks":
                 {
                     _algorythm = new ShennonAlgorithm();
                     if (_algorythm.Fill(parameters, WriteResult))
@@ -106,14 +107,15 @@ namespace CryptoDDZ
         private int _m;
         private int _k;
 
-        public static Int64 MyPow(int x, int y, int p)
+        public static UInt64 MyPow(int x, int y, int p)
         {
-            Int64 result = x;
+            UInt64 result = (UInt64)x;
+            UInt64 _p = (UInt64)p;
             for (int i = 0; i < y - 1; i++)
             {
-                result = result % p * x;
+                result = (result * (UInt64)x) % _p;
             }
-            return result % p;
+            return result;
         }
 
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
@@ -189,6 +191,12 @@ namespace CryptoDDZ
 
         public override void Do()
         {
+            WriteResult?.Invoke("p=" + _p);
+            WriteResult?.Invoke("a=" + _a);
+            WriteResult?.Invoke("b=" + _b);
+            WriteResult?.Invoke("m=" + _m);
+            WriteResult?.Invoke("k=" + _k);
+            
             int I = 0;
             // ReSharper disable once InconsistentNaming
             int J = 1;
@@ -202,7 +210,7 @@ namespace CryptoDDZ
             Dictionary<int, double> numer2 = new Dictionary<int, double>();
             for (int i = 0; i < _m; i++)
             {
-                var rez = (Math.Pow(_a, i) * _b) % _p;
+                var rez = ((int)MyPow(_a, i, _p) * _b) % _p;//(Math.Pow(_a, i) * _b) % _p;
                 numer1.Add(i, rez);
             }
             for (int i = 1; i < _k + 1; i++)
@@ -240,6 +248,15 @@ namespace CryptoDDZ
             WriteResult?.Invoke("j=" + J);
             var x = I * _m - J;
             WriteResult?.Invoke("x=i*m-j=" + x);
+            UInt64 test = MyPow(_a, x, _p);
+            if (test==(UInt64)_b)
+            {
+                WriteResult?.Invoke("true");
+            }
+            if (x==-1)
+            {
+                WriteResult?.Invoke("Bad parametr a!");
+            }
         }
     }
 }
