@@ -145,6 +145,10 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр p не удалось привести к int!");
                 return false;
             }
+            if (_p <= 0)
+            {
+                WriteResult?.Invoke("Параметр p задан не верно!");
+            }
             parameters.TryGetValue("a", out helpStr);
             if (helpStr == null)
             {
@@ -156,6 +160,10 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр a не удалось привести к int!");
                 return false;
             }
+            if (_a <= 0)
+            {
+                WriteResult?.Invoke("Параметр a задан не верно!");
+            }
             parameters.TryGetValue("b", out helpStr);
             if (helpStr == null)
             {
@@ -166,6 +174,10 @@ namespace CryptoDDZ
             {
                 WriteResult?.Invoke("Параметр b не удалось привести к int!");
                 return false;
+            }
+            if (_b <= 0)
+            {
+                WriteResult?.Invoke("Параметр b задан не верно!");
             }
             parameters.TryGetValue("m", out helpStr);
             if (helpStr == null)
