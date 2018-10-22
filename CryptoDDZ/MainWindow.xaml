@@ -19,8 +19,9 @@
         <ComboBox x:Name="AlgCombo" Grid.ColumnSpan="3" Margin="10,25,10,25" SelectionChanged="AlgCombo_OnSelectionChanged"
                   MaxHeight="40" FontSize="15" FontFamily="Ariel" >
             <!--Сюда добавить еще один <ComboBoxItem></ComboBoxItem> с именем алгоритма-->
-            <ComboBoxItem x:Name="Example">Пример</ComboBoxItem>
+            <ComboBoxItem x:Name="Example" Visibility="Collapsed">Пример</ComboBoxItem>
             <ComboBoxItem x:Name="Shenks">Логарифмирование в конечном поле. Алгоритм Шенкса.</ComboBoxItem>
+            <ComboBoxItem x:Name="Rsa">Алгоритм Ривеста, Шамира, Адлемана. RSA.</ComboBoxItem>
         </ComboBox>
         <TextBox x:Name="InfoBox" Grid.Row="1" Grid.Column="0" Margin="10" 
                  FontSize="15" FontFamily="Ariel" IsReadOnly="True" Grid.RowSpan="2" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>

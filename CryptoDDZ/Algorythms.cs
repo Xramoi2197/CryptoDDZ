@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace CryptoDDZ
 {
@@ -30,6 +29,15 @@ namespace CryptoDDZ
                 case "Shenks":
                 {
                     _algorythm = new ShennonAlgorithm();
+                    if (_algorythm.Fill(parameters, WriteResult))
+                    {
+                        _algorythm.Do();
+                    }
+                    break;
+                }
+                case "Rsa":
+                {
+                    _algorythm = new RsaAlgorithm();
                     if (_algorythm.Fill(parameters, WriteResult))
                     {
                         _algorythm.Do();
@@ -110,10 +118,10 @@ namespace CryptoDDZ
         public static UInt64 MyPow(int x, int y, int p)
         {
             UInt64 result = (UInt64)x;
-            UInt64 _p = (UInt64)p;
+            UInt64 uP = (UInt64)p;
             for (int i = 0; i < y - 1; i++)
             {
-                result = (result * (UInt64)x) % _p;
+                result = (result * (UInt64)x) % uP;
             }
             return result;
         }
@@ -264,6 +272,133 @@ namespace CryptoDDZ
             {
                 WriteResult?.Invoke("Bad parametr a!");
             }
+        }
+    }
+
+    class RsaAlgorithm : Algorythm
+    {
+        public override event Action<string> WriteResult;
+        // ReSharper disable once InconsistentNaming
+        private long _N;
+        private long _p;
+        private long _q;
+        private long _e;
+        private long _d;
+
+        private long GenEuclidAlgorithm(long a, long b)
+        {
+            long q, p = 0;
+            long u1 = a, u2 = 1, u3 = 0;
+            long v1 = b, v2 = 0, v3 = 1;
+            long t1 = 1, t2, t3 = 1;
+            while (t1 > 0)
+            {
+                q = u1 / v1;
+                t1 = u1 % v1;
+                t2 = u2 - v2 * q;
+                p = t3;
+                if (p < 0)
+                {
+                    p = p + a;
+                }
+
+                t3 = u3 - q * v3;
+                u1 = v1;
+                u2 = v2;
+                u3 = v3;
+                v1 = t1;
+                v2 = t2;
+                v3 = t3;
+            }
+            return p;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private bool IsSimple(long N)
+        {
+            for (uint i = 2; i < (uint)(N / 2); i++)
+            {
+                if (N % 2 == 0)
+                    return false;
+            }
+
+            return true;
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private void Factorization(long N, out long rez1, out long rez2)
+        {
+            long p, q = 0;
+            for (p = 2; p <= (long)Math.Pow(N, 0.5); p++)
+            {
+                if (IsSimple(p) && N % p == 0 && IsSimple(N / p))
+                {
+                    q = N / p;
+                    break;
+                }
+            }
+            rez1 = p;
+            rez2 = q;
+            var msg = "После факторизации число N = " + p + " * " + q + ". ";
+            WriteResult?.Invoke(msg);
+        }
+
+        private long EulerFunction(long p, long q)
+        {
+            var result = (p - 1) * (q - 1);
+            var msg = "Функция Эйлера от N равна: ( " + p + " - 1 ) * ( " + q + " - 1 ) = " + result;
+            WriteResult?.Invoke(msg);
+            return result;
+        }
+        
+        public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
+        {
+            _N = 0;
+            _p = 0;
+            _q = 0;
+            _e = 0;
+            _d = 0;
+            WriteResult += writeAction;
+            string helpStr;
+            parameters.TryGetValue("N", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр N не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _N))
+            {
+                WriteResult?.Invoke("Параметр N не удалось привести к long!");
+                return false;
+            }
+            if (_N <= 0)
+            {
+                WriteResult?.Invoke("Параметр N отрицателен.");
+            }
+            parameters.TryGetValue("e", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр e не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _e))
+            {
+                WriteResult?.Invoke("Параметр e не удалось привести к long!");
+                return false;
+            }
+            if (_e <= 0)
+            {
+                WriteResult?.Invoke("Параметр e отрицателен.");
+            }
+            return true;
+        }
+
+        public override void Do()
+        {
+            Factorization(_N, out _p, out _q);
+            _d = GenEuclidAlgorithm(EulerFunction(_p, _q), _e);
+            var msg = "Закрытая экспонента равна: " + _d;
+            WriteResult?.Invoke(msg);
         }
     }
 }

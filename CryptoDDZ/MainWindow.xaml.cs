@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace CryptoDDZ
 {
@@ -63,12 +62,12 @@ namespace CryptoDDZ
             _parameters = new Dictionary<string, string>();
             _rowExs = new List<DataGridRowEx>();
             RezultBox.Text = string.Empty;
-            
+
             switch (name) //Сюда необходимо добавть свой алгоритм!!!
             {
                 case "Example":
                 {
-                    _info = "Example text info"; //Info надо будет положить в ресурсы!!!
+                    _info = "Example text info"; //Info надо будет положить в ресурсы!!!                   
                     _parameters.Add("x", string.Empty);
                     _parameters.Add("y", string.Empty);
                     DataGridRowEx newRow = new DataGridRowEx(1, "x", string.Empty);
@@ -102,6 +101,19 @@ namespace CryptoDDZ
                     DataGrid.ItemsSource = _rowExs;
                     break;
                 }
+                case "Rsa":
+                {
+                    _info = "RSA info"; //Info надо будет положить в ресурсы!!!                   
+                    _parameters.Add("N", string.Empty);
+                    _parameters.Add("e", string.Empty);
+                    DataGridRowEx newRow = new DataGridRowEx(1, "N", string.Empty);
+                    _rowExs.Add(newRow);
+                    newRow = new DataGridRowEx(2, "e", string.Empty);
+                    _rowExs.Add(newRow);
+                    _rowExs.Sort();
+                    DataGrid.ItemsSource = _rowExs;
+                    break;
+                }
             }
             InfoBox.Text = _info;
         }
@@ -120,7 +132,7 @@ namespace CryptoDDZ
             if (e.EditAction == DataGridEditAction.Commit)
             {
                 
-                _parameters[variable] = text?.Text;
+                _parameters[variable] = text.Text;
                 int count = grid.Items.Count;
                 if (e.Row.GetIndex() == count - 1)
                 {
