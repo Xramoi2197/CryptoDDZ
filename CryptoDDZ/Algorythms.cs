@@ -238,20 +238,7 @@ namespace CryptoDDZ
                 var rez = MyPow(_a, i * _m, _p);
                 numer2.Add(i, rez);
             }
-            WriteResult?.Invoke("Первый ряд:");
-            string numerable = string.Empty;
-            for (int i = 0; i < _m; i++)
-            {
-                numerable += numer1[i] + " ";
-            }
-            WriteResult?.Invoke(numerable);
-            WriteResult?.Invoke("Второй ряд:");
-            numerable = string.Empty;
-            for (int i = 1; i < _k + 1; i++)
-            {
-                numerable += numer2[i] + " ";
-            }
-            WriteResult?.Invoke(numerable);
+            
             bool flag = false;
             for (int j = 1; j < _k + 1; j++)
             {
@@ -271,19 +258,47 @@ namespace CryptoDDZ
                     }
                 }
             }
+            var x = I * _m - J;
+            if (x == -1)
+            {
+                WriteResult?.Invoke("Уравнение не имеет решений!");
+                return;
+            }
+            WriteResult?.Invoke("Первый ряд:");
+            var numerable1 = string.Empty;
+            for (int i = 0; i < _m; i++)
+            {
+                if (i == J)
+                {
+                    numerable1 += "[" + numer1[i] + "] ";
+                    continue;
+                }
+                numerable1 += numer1[i] + " ";
+            }
+            WriteResult?.Invoke(numerable1);
+            WriteResult?.Invoke("Второй ряд:");
+            var numerable2 = string.Empty;
+            for (int i = 1; i < _k + 1; i++)
+            {
+                if (i == I)
+                {
+                    numerable2 += "[" + numer2[i] + "] ";
+                    continue;
+                }
+                numerable2 += numer2[i] + " ";
+            }
+            WriteResult?.Invoke(numerable2);
+
             WriteResult?.Invoke("i=" + I);
             WriteResult?.Invoke("j=" + J);
-            var x = I * _m - J;
+            
             WriteResult?.Invoke("x=i*m-j=" + x);
             UInt64 test = MyPow(_a, x, _p);
             if (test==(UInt64)_b)
             {
                 WriteResult?.Invoke("true");
             }
-            if (x==-1)
-            {
-                WriteResult?.Invoke("Bad parametr a!");
-            }
+            
         }
     }
 
@@ -370,6 +385,10 @@ namespace CryptoDDZ
             _q = 0;
             _e = 0;
             _d = 0;
+            if (parameters.Count != 2)
+            {
+                return false;
+            }
             WriteResult += writeAction;
             string helpStr;
             parameters.TryGetValue("N", out helpStr);
