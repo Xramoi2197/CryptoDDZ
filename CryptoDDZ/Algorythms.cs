@@ -28,7 +28,7 @@ namespace CryptoDDZ
                 }
                 case "Shenks":
                 {
-                    _algorythm = new ShennonAlgorithm();
+                    _algorythm = new ShenksAlgorithm();
                     if (_algorythm.Fill(parameters, WriteResult))
                     {
                         _algorythm.Do();
@@ -105,8 +105,8 @@ namespace CryptoDDZ
         }
     }
 
-    /*Алгоритм Шеннона(Шаг младенца, шаг великана)*/
-    public class ShennonAlgorithm : Algorythm
+    /*Алгоритм Шенкса(Шаг младенца, шаг великана)*/
+    public class ShenksAlgorithm : Algorythm
     {
         public override event Action<string> WriteResult;
         private int _p;
@@ -302,6 +302,7 @@ namespace CryptoDDZ
         }
     }
 
+    /*Алгоритм RSA*/
     class RsaAlgorithm : Algorythm
     {
         public override event Action<string> WriteResult;

@@ -103,7 +103,7 @@ namespace CryptoDDZ
                 }
                 case "Rsa":
                 {
-                    _info = "RSA info"; //Info надо будет положить в ресурсы!!!                   
+                    _info = Properties.Resources.RSA; //Info надо будет положить в ресурсы!!!                   
                     _parameters.Add("N", string.Empty);
                     _parameters.Add("e", string.Empty);
                     DataGridRowEx newRow = new DataGridRowEx(1, "N", string.Empty);
