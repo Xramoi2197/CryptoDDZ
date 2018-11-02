@@ -16,6 +16,12 @@ namespace CryptoDDZ
             RezultBox.Text += "\r\n";
         }
 
+        public void WriteTexts(string result)
+        {
+            EndBox.Text += result;
+            EndBox.Text += "\r\n";
+        }
+
         readonly Algorythms _algorythms;
         private string _info;
         private Dictionary<string, string> _parameters;
@@ -23,7 +29,7 @@ namespace CryptoDDZ
 
         public MainWindow()
         {
-            _algorythms = new Algorythms(WriteResults);
+            _algorythms = new Algorythms(WriteResults, WriteTexts);
             InitializeComponent();
         }
 
@@ -139,6 +145,20 @@ namespace CryptoDDZ
                     DoButton.Focus();
                 }
             }
+        }
+
+        private void CryptButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            EndBox.Text = string.Empty;
+            var text = AlgCombo.SelectedItem as ComboBoxItem;
+            _algorythms.DoCrypt(text?.Name, KeyBox.Text, StartBox.Text);
+        }
+
+        private void DeCryptButton_OnClickCryptButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            EndBox.Text = string.Empty;
+            var text = AlgCombo.SelectedItem as ComboBoxItem;
+            _algorythms.DoDecrypt(text?.Name, KeyBox.Text, StartBox.Text);
         }
     }
 

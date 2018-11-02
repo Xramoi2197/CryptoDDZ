@@ -7,10 +7,12 @@ namespace CryptoDDZ
     {
         private Algorythm _algorythm;
         public event Action<string> WriteResult;
+        public event Action<string> WriteText;
 
-        public Algorythms(Action<string> writeAction)
+        public Algorythms(Action<string> writeAction, Action<string> writeTextAction)
         {
             WriteResult += writeAction;
+            WriteText += writeTextAction;
         }
 
         public void DoAlg(string algName, Dictionary<string,string> parameters) //Функция выбирает нужный алгоритм и запускает его
@@ -20,31 +22,72 @@ namespace CryptoDDZ
                 case "Example":
                 {
                     _algorythm = new PresentAlg();
-                    if (_algorythm.Fill(parameters, WriteResult))
-                    {
-                        _algorythm.Do();
-                    }
                     break;
                 }
                 case "Shenks":
                 {
-                    _algorythm = new ShenksAlgorithm();
-                    if (_algorythm.Fill(parameters, WriteResult))
-                    {
-                        _algorythm.Do();
-                    }
+                    _algorythm = new ShenksAlgorithm();                   
                     break;
                 }
                 case "Rsa":
                 {
                     _algorythm = new RsaAlgorithm();
-                    if (_algorythm.Fill(parameters, WriteResult))
-                    {
-                        _algorythm.Do();
-                    }
                     break;
                 }
+                default: return;
             }
+            if (_algorythm.Fill(parameters, WriteResult))
+            {
+                _algorythm.Do();
+            }
+        }
+
+        public void DoCrypt(string algName,string key, string text) //Функция выбирает нужный алгоритм и запускает его
+        {
+            switch (algName)//Сюда необходимо добавить свой алгоритм
+            {
+                case "Example":
+                {
+                    _algorythm = new PresentAlg();                    
+                    break;
+                }
+                case "Shenks":
+                {
+                    _algorythm = new ShenksAlgorithm();
+                    break;
+                }
+                case "Rsa":
+                {
+                    _algorythm = new RsaAlgorithm();
+                    break;
+                }
+                default: return;
+            }
+            WriteText?.Invoke(_algorythm.Crypt(key, text));
+        }
+
+        public void DoDecrypt(string algName, string key, string text) //Функция выбирает нужный алгоритм и запускает его
+        {
+            switch (algName)//Сюда необходимо добавить свой алгоритм
+            {
+                case "Example":
+                {
+                    _algorythm = new PresentAlg();
+                    break;
+                }
+                case "Shenks":
+                {
+                    _algorythm = new ShenksAlgorithm();
+                    break;
+                }
+                case "Rsa":
+                {
+                    _algorythm = new RsaAlgorithm();                    
+                    break;
+                }
+                default: return;
+            }
+            WriteText?.Invoke(_algorythm.DeCrypt(key, text));
         }
     }
 
@@ -53,6 +96,8 @@ namespace CryptoDDZ
         public abstract event Action<string> WriteResult; //Event для вывода на экран
         public abstract bool Fill(Dictionary<string, string> parameters, Action<string> writeAction); //Функция заполнения и проверки всех параметров алгоритма
         public abstract void Do(); //Функция выполняет алгоритм и вываодит его в TextBox
+        public abstract string Crypt(string key, string text); //Функция шифрует текст заданным ключем
+        public abstract string DeCrypt(string key, string text); //Функция расшифровывает текст заданным ключем
     }
 
     /*Пример алгоритма*/
@@ -102,6 +147,16 @@ namespace CryptoDDZ
             int rez = _x + _y;
             WriteResult?.Invoke("x+y=" + rez);
 
+        }
+
+        public override string Crypt(string key, string text)
+        {
+            return "Зашифровали";
+        }
+
+        public override string DeCrypt(string key, string text)
+        {
+            return "Расшифровали";
         }
     }
 
@@ -300,6 +355,16 @@ namespace CryptoDDZ
             }
             
         }
+
+        public override string Crypt(string key, string text)
+        {
+            return "Зашифровали";
+        }
+
+        public override string DeCrypt(string key, string text)
+        {
+            return "Расшифровали";
+        }
     }
 
     /*Алгоритм RSA*/
@@ -431,6 +496,16 @@ namespace CryptoDDZ
             _d = GenEuclidAlgorithm(EulerFunction(_p, _q), _e);
             var msg = "Закрытая экспонента равна: " + _d;
             WriteResult?.Invoke(msg);
+        }
+
+        public override string Crypt(string key, string text)
+        {
+            return "Зашифровали";
+        }
+
+        public override string DeCrypt(string key, string text)
+        {
+            return "Расшифровали";
         }
     }
 }

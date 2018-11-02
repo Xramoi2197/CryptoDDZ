@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Справочник алгоритмов" MinHeight="600" MinWidth="800" Width="800" Height="600" Background="Azure">
+        Title="Справочник алгоритмов" MinHeight="800" MinWidth="800" Width="800" Height="600" Background="Azure">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" ></ColumnDefinition>
@@ -14,9 +14,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
+            
+            <RowDefinition Height="0.4*"></RowDefinition>
         </Grid.RowDefinitions>
-        <ComboBox x:Name="AlgCombo" Grid.ColumnSpan="3" Margin="10,25,10,25" SelectionChanged="AlgCombo_OnSelectionChanged"
+        <GridSplitter Grid.Row="2" Grid.ColumnSpan="3" Height="2" ShowsPreview="False"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="DarkSeaGreen" ResizeDirection="Rows"></GridSplitter>
+        <ComboBox x:Name="AlgCombo" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Margin="10,25,10,25" SelectionChanged="AlgCombo_OnSelectionChanged"
                   MaxHeight="40" FontSize="15" FontFamily="Ariel" >
             <!--Сюда добавить еще один <ComboBoxItem></ComboBoxItem> с именем алгоритма-->
             <ComboBoxItem x:Name="Example" Visibility="Collapsed">Пример</ComboBoxItem>
@@ -24,22 +27,48 @@
             <ComboBoxItem x:Name="Rsa">Алгоритм Ривеста, Шамира, Адлемана. RSA.</ComboBoxItem>
         </ComboBox>
         <TextBox x:Name="InfoBox" Grid.Row="1" Grid.Column="0" Margin="10" 
-                 FontSize="15" FontFamily="Ariel" IsReadOnly="True" Grid.RowSpan="2" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
-        <DataGrid x:Name="DataGrid" Grid.Row="1" Grid.Column="1" Margin="10" 
-                  CanUserAddRows="False" CanUserDeleteRows="False"
-                  CanUserReorderColumns="False" CanUserResizeColumns="False" 
-                  CanUserResizeRows="False" CanUserSortColumns="False" HeadersVisibility="Row"
-                  FontSize="15" FontFamily="Ariel" AutoGenerateColumns="False" 
-                  CellEditEnding="DataGrid_OnCellEditEnding">
-            <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Binding="{Binding Path=Variable}" IsReadOnly="True"></DataGridTextColumn>
-                <DataGridTextColumn Width="*" Binding="{Binding Path=Value}"></DataGridTextColumn>
-            </DataGrid.Columns>
-            
-        </DataGrid>
+                 FontSize="15" FontFamily="Ariel" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="0.3*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <DataGrid x:Name="DataGrid" Margin="10" Height="Auto" 
+                      CanUserAddRows="False" CanUserDeleteRows="False"
+                      CanUserReorderColumns="False" CanUserResizeColumns="False" 
+                      CanUserResizeRows="True" CanUserSortColumns="False" HeadersVisibility="None"
+                      FontSize="15" FontFamily="Ariel" AutoGenerateColumns="False"
+                      CellEditEnding="DataGrid_OnCellEditEnding">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Binding="{Binding Path=Variable}" IsReadOnly="True"></DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding Path=Value}"></DataGridTextColumn>
+                </DataGrid.Columns>
+
+            </DataGrid>
+            <Button x:Name="DoButton" Click="DoButton_OnClick" Grid.Row="1"
+                    Margin="15" Content="Выполнить" FontSize="15" FontFamily="Ariel" Visibility="Visible" IsDefault="True"></Button>
+        </Grid>
         <TextBox x:Name="RezultBox" Grid.Row="1" Grid.Column="2" Margin="10" 
-                 FontSize="15" FontFamily="Ariel" IsReadOnly="True" Grid.RowSpan="2" TextWrapping="Wrap"></TextBox>
-        <Button x:Name="DoButton" Grid.Row="2" Grid.Column="1" Click="DoButton_OnClick"
-                Margin="15" Content="Выполнить" FontSize="15" FontFamily="Ariel" Visibility="Visible" IsDefault="True"></Button>
+                 FontSize="15" FontFamily="Ariel" IsReadOnly="True" TextWrapping="Wrap"></TextBox>
+        <TextBox x:Name="StartBox" Grid.Row="2" Grid.Column="0" Margin="10" 
+                 FontSize="15" FontFamily="Ariel" IsReadOnly="False" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
+        <TextBox x:Name="EndBox" Grid.Row="2" Grid.Column="2" Margin="10" 
+                 FontSize="15" FontFamily="Ariel" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="KeyBox" Grid.Row="0" Margin="5" 
+                     FontSize="15" FontFamily="Ariel" IsReadOnly="False" MaxLength="50"></TextBox>
+            <Button x:Name="CryptButton" Click="CryptButton_OnClick" Grid.Row="1"
+                    Margin="8" Content="Зашифровать" FontSize="15" FontFamily="Ariel" Visibility="Visible" IsDefault="True"></Button>
+            <Button x:Name="DeCryptButton" Click="DeCryptButton_OnClickCryptButton_OnClick" Grid.Row="3"
+                    Margin="8" Content="Расшифровать" FontSize="15" FontFamily="Ariel" Visibility="Visible" IsDefault="True"></Button>
+            <Image Grid.Row="2" Source="Resources/arrow.png" Visibility="Visible"></Image>
+        </Grid>
     </Grid>
 </Window>
