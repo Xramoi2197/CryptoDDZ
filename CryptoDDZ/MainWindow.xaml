@@ -62,8 +62,8 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBox x:Name="KeyBox" Grid.Row="0" Margin="5" 
-                     FontSize="15" FontFamily="Ariel" IsReadOnly="False" MaxLength="50"></TextBox>
+            <!--<TextBox x:Name="KeyBox" Grid.Row="0" Margin="5" 
+                     FontSize="15" FontFamily="Ariel" IsReadOnly="False" MaxLength="50"></TextBox>-->
             <Button x:Name="CryptButton" Click="CryptButton_OnClick" Grid.Row="1"
                     Margin="8" Content="Зашифровать" FontSize="15" FontFamily="Ariel" Visibility="Visible" IsDefault="True"></Button>
             <Button x:Name="DeCryptButton" Click="DeCryptButton_OnClickCryptButton_OnClick" Grid.Row="3"

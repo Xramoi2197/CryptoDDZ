@@ -11,6 +11,7 @@ namespace CryptoDDZ
 
         public Algorythms(Action<string> writeAction, Action<string> writeTextAction)
         {
+            _algorythm = null;
             WriteResult += writeAction;
             WriteText += writeTextAction;
         }
@@ -42,62 +43,73 @@ namespace CryptoDDZ
             }
         }
 
-        public void DoCrypt(string algName,string key, string text) //Функция выбирает нужный алгоритм и запускает его
+        public void DoCrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
         {
-            switch (algName)//Сюда необходимо добавить свой алгоритм
+            //switch (algName)//Сюда необходимо добавить свой алгоритм
+            //{
+            //    case "Example":
+            //    {
+            //        _algorythm = new PresentAlg();                    
+            //        break;
+            //    }
+            //    case "Shenks":
+            //    {
+            //        _algorythm = new ShenksAlgorithm();
+            //        break;
+            //    }
+            //    case "Rsa":
+            //    {
+            //        _algorythm = new RsaAlgorithm();
+            //        break;
+            //    }
+            //    default: return;
+            //}
+            if (_algorythm?.Name != algName)
             {
-                case "Example":
-                {
-                    _algorythm = new PresentAlg();                    
-                    break;
-                }
-                case "Shenks":
-                {
-                    _algorythm = new ShenksAlgorithm();
-                    break;
-                }
-                case "Rsa":
-                {
-                    _algorythm = new RsaAlgorithm();
-                    break;
-                }
-                default: return;
+                WriteResult?.Invoke("Сначала необходимо выполнить алгоритм");
+                return;
             }
-            WriteText?.Invoke(_algorythm.Crypt(key, text));
+            WriteText?.Invoke(_algorythm?.Crypt(text));
         }
 
-        public void DoDecrypt(string algName, string key, string text) //Функция выбирает нужный алгоритм и запускает его
+        public void DoDecrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
         {
-            switch (algName)//Сюда необходимо добавить свой алгоритм
+            //switch (algName)//Сюда необходимо добавить свой алгоритм
+            //{
+            //    case "Example":
+            //    {
+            //        _algorythm = new PresentAlg();
+            //        break;
+            //    }
+            //    case "Shenks":
+            //    {
+            //        _algorythm = new ShenksAlgorithm();
+            //        break;
+            //    }
+            //    case "Rsa":
+            //    {
+            //        _algorythm = new RsaAlgorithm();                    
+            //        break;
+            //    }
+            //    default: return;
+            //}
+            if (_algorythm?.Name != algName)
             {
-                case "Example":
-                {
-                    _algorythm = new PresentAlg();
-                    break;
-                }
-                case "Shenks":
-                {
-                    _algorythm = new ShenksAlgorithm();
-                    break;
-                }
-                case "Rsa":
-                {
-                    _algorythm = new RsaAlgorithm();                    
-                    break;
-                }
-                default: return;
+                WriteResult?.Invoke("Сначала необходимо выполнить алгоритм.");
+                return;
             }
-            WriteText?.Invoke(_algorythm.DeCrypt(key, text));
+            WriteText?.Invoke(_algorythm?.DeCrypt(text));
         }
     }
 
     public abstract class Algorythm //От этого класса наследуются алгоритмы
     {
+        public string Name;
         public abstract event Action<string> WriteResult; //Event для вывода на экран
         public abstract bool Fill(Dictionary<string, string> parameters, Action<string> writeAction); //Функция заполнения и проверки всех параметров алгоритма
         public abstract void Do(); //Функция выполняет алгоритм и вываодит его в TextBox
-        public abstract string Crypt(string key, string text); //Функция шифрует текст заданным ключем
-        public abstract string DeCrypt(string key, string text); //Функция расшифровывает текст заданным ключем
+        public abstract string Crypt(string text); //Функция шифрует текст заданным ключем
+        public abstract string DeCrypt(string text); //Функция расшифровывает текст заданным ключем
     }
 
     /*Пример алгоритма*/
@@ -109,6 +121,7 @@ namespace CryptoDDZ
 
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
+            Name = "Example";
             WriteResult += writeAction;
             if (parameters.Count != 2)
             {
@@ -149,12 +162,12 @@ namespace CryptoDDZ
 
         }
 
-        public override string Crypt(string key, string text)
+        public override string Crypt(string text)
         {
             return "Зашифровали";
         }
 
-        public override string DeCrypt(string key, string text)
+        public override string DeCrypt(string text)
         {
             return "Расшифровали";
         }
@@ -183,6 +196,7 @@ namespace CryptoDDZ
 
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
+            Name = "Shenks";
             WriteResult += writeAction;
             if (parameters.Count != 5)
             {
@@ -356,12 +370,12 @@ namespace CryptoDDZ
             
         }
 
-        public override string Crypt(string key, string text)
+        public override string Crypt(string text)
         {
             return "Зашифровали";
         }
 
-        public override string DeCrypt(string key, string text)
+        public override string DeCrypt(string text)
         {
             return "Расшифровали";
         }
@@ -446,6 +460,7 @@ namespace CryptoDDZ
         
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
+            Name = "Rsa";
             _N = 0;
             _p = 0;
             _q = 0;
@@ -498,12 +513,12 @@ namespace CryptoDDZ
             WriteResult?.Invoke(msg);
         }
 
-        public override string Crypt(string key, string text)
+        public override string Crypt(string text)
         {
             return "Зашифровали";
         }
 
-        public override string DeCrypt(string key, string text)
+        public override string DeCrypt(string text)
         {
             return "Расшифровали";
         }

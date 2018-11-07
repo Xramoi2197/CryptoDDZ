@@ -151,14 +151,14 @@ namespace CryptoDDZ
         {
             EndBox.Text = string.Empty;
             var text = AlgCombo.SelectedItem as ComboBoxItem;
-            _algorythms.DoCrypt(text?.Name, KeyBox.Text, StartBox.Text);
+            _algorythms.DoCrypt(text?.Name, StartBox.Text);
         }
 
         private void DeCryptButton_OnClickCryptButton_OnClick(object sender, RoutedEventArgs e)
         {
             EndBox.Text = string.Empty;
             var text = AlgCombo.SelectedItem as ComboBoxItem;
-            _algorythms.DoDecrypt(text?.Name, KeyBox.Text, StartBox.Text);
+            _algorythms.DoDecrypt(text?.Name, StartBox.Text);
         }
     }
 
