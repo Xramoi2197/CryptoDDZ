@@ -384,11 +384,7 @@ namespace CryptoDDZ
     /*Алгоритм RSA*/
     class RsaAlgorithm : Algorythm
     {
-        public char[] Characters = new char[] {  'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
-            'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С',
-            'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ',
-            'Э', 'Ю', 'Я', ' ', '1', '2', '3', '4', '5', '6', '7',
-            '8', '9', '0' };
+        public char[] Characters;
         public override event Action<string> WriteResult;
         // ReSharper disable once InconsistentNaming
         private long _N;
@@ -465,6 +461,12 @@ namespace CryptoDDZ
         
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
+            Characters = new [] {
+                'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
+                'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С',
+                'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ',
+                'Э', 'Ю', 'Я', ' ', '1', '2', '3', '4', '5', '6', '7',
+                '8', '9', '0' };
             Name = "Rsa";
             _N = 0;
             _p = 0;
@@ -518,14 +520,71 @@ namespace CryptoDDZ
             WriteResult?.Invoke(msg);
         }
 
-        public override string Crypt(string text)
+        private string RSA_Endoce(string text, long e, long n)
         {
-            return "Зашифровали";
+            string result = "";
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int index = Array.IndexOf(Characters, text[i]);
+
+                ulong bi = (ulong)Math.Pow(index, e);
+
+                bi = bi % (ulong)n;
+
+                result += bi.ToString();
+                if (i != text.Length - 1)
+                    result += ' ';
+            }
+
+            return result;
+        }
+        public override string Crypt(string text)
+        {//N e - открытый ключ
+
+            if (text.Length == 0)
+                return "Нет текста!";
+            if (_N != 0)
+            {
+                var upper = text.ToUpper();
+
+                string result = RSA_Endoce(upper, _e, _N);
+
+                return result;
+            }
+            return "N = 0";
         }
 
+        //private string RSA_Dedoce(string input, long d, long n)
+        //{
+        //    string result = "";
+        //    List<string> helpList = new List<string>(input.Split(' '));
+
+        //    foreach (string item in helpList)
+        //    {
+        //        ulong bi = (ulong)Math.Pow(Convert.ToDouble(item), d);
+
+        //        bi = bi % (ulong)n;
+
+        //        int index = Convert.ToInt32(bi.ToString());
+
+        //        result += Characters[index].ToString();
+        //    }
+
+        //    return result;
+        //}
+
         public override string DeCrypt(string text)
-        {
-            return "Расшифровали";
+        {//N d - Закрытый ключ
+            if (text.Length == 0)
+                return "Нет текста!";
+            if (_N != 0)
+            {
+                string result = RSA_Endoce(text, _e, _N);
+
+                return result;
+            }
+            return "N = 0";
         }
     }
 }
