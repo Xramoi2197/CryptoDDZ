@@ -599,16 +599,16 @@ namespace CryptoDDZ
     class DiffiHelmanAlg : Algorythm
     {
         public override event Action<string> WriteResult;
-        private long _g;
-        private long _p;
-        private long _a;
-        private long _b;
+        private UInt64 _g;
+        private UInt64 _p;
+        private UInt64 _a;
+        private UInt64 _b;
 
-        public static UInt64 MyPow(long x, long y, long p)
+        public static UInt64 MyPow(UInt64 x, UInt64 y, UInt64 p)
         {
             UInt64 result = (UInt64)x;
             UInt64 uP = (UInt64)p;
-            for (long i = 0; i < y - 1; i++)
+            for (UInt64 i = 0; i < y - 1; i++)
             {
                 result = (result * (UInt64)x) % uP;
             }
@@ -636,17 +636,17 @@ namespace CryptoDDZ
             msg = "b=" + _b;
             WriteResult?.Invoke(msg);
 
-            ulong A = MyPow(_g, _a, _p);
+            UInt64 A = MyPow(_g, _a, _p);
             msg = "1)\n(1)A=g^a modp=" + A;
             WriteResult?.Invoke(msg);
-            ulong B = MyPow(_g, _b, _p);
-            msg = "(2)A=g^a modp=" + B;
+            UInt64 B = MyPow(_g, _b, _p);
+            msg = "(2)B=g^b modp=" + B;
             WriteResult?.Invoke(msg);
-            ulong B2 = MyPow((long)B, _a, _p);
+            UInt64 B2 = MyPow(B, _a, _p);
             msg = "2)\n(3)B^a modp=g^ab modp=" + B2;
             WriteResult?.Invoke(msg);
-            ulong A2 = MyPow((long)A, _b, _p);
-            msg = "(4)A^a modp=g^ab modp=" + A2;
+            UInt64 A2 = MyPow(A, _b, _p);
+            msg = "(4)A^b modp=g^ab modp=" + A2;
             WriteResult?.Invoke(msg);
             if (A2!=B2)
             {
@@ -676,7 +676,7 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр g не задан!");
                 return false;
             }
-            if (!long.TryParse(helpStr, out _g))
+            if (!UInt64.TryParse(helpStr, out _g))
             {
                 WriteResult?.Invoke("Параметр g не удалось привести к long!");
                 return false;
@@ -691,7 +691,7 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр p не задан!");
                 return false;
             }
-            if (!long.TryParse(helpStr, out _p))
+            if (!UInt64.TryParse(helpStr, out _p))
             {
                 WriteResult?.Invoke("Параметр p не удалось привести к long!");
                 return false;
@@ -706,7 +706,7 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр a не задан!");
                 return false;
             }
-            if (!long.TryParse(helpStr, out _a))
+            if (!UInt64.TryParse(helpStr, out _a))
             {
                 WriteResult?.Invoke("Параметр a не удалось привести к long!");
                 return false;
@@ -721,7 +721,7 @@ namespace CryptoDDZ
                 WriteResult?.Invoke("Параметр b не задан!");
                 return false;
             }
-            if (!long.TryParse(helpStr, out _b))
+            if (!UInt64.TryParse(helpStr, out _b))
             {
                 WriteResult?.Invoke("Параметр b не удалось привести к long!");
                 return false;
