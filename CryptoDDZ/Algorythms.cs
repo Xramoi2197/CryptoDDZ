@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
+using System.Text.RegularExpressions;
+using System.Windows.Automation.Peers;
+
 namespace CryptoDDZ
 {
     class Algorythms
@@ -385,7 +387,7 @@ namespace CryptoDDZ
     /*Алгоритм RSA*/
     class RsaAlgorithm : Algorythm
     {
-        private string _alphabet;
+        string Characters;
         public override event Action<string> WriteResult;
         // ReSharper disable once InconsistentNaming
         private long _N;
@@ -462,7 +464,7 @@ namespace CryptoDDZ
         
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
-            _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890";
+            Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             Name = "Rsa";
             _N = 0;
             _p = 0;
@@ -519,14 +521,19 @@ namespace CryptoDDZ
         private string RSA_Endoce(string text, long e, long n)
         {
             string result = "";
-
-
-            for (int i = 0; i < text.Length; i++)
+            BigInteger bi;
+            for (int i = 0; i < text.Length; i += 2)
             {
-                int index = _alphabet.IndexOf(text.ElementAt(i), 0) + 1;
-                BigInteger bi = BigInteger.Pow(index, (int)e);
-
-                bi = bi % (ulong)n;
+                int index1 = Characters.IndexOf(text[i]);
+                if (i == text.Length - 1)
+                    bi = BigInteger.Pow(index1, (int)e);
+                else
+                {
+                    int index2 = Characters.IndexOf(text[i + 1]);
+                    bi = BigInteger.Pow(index2 + index1 * Characters.Length, (int)e);
+                }
+                BigInteger n_ = new BigInteger((int)n);
+                bi = bi % n_;
 
                 result += bi.ToString();
                 if (i != text.Length - 1)
@@ -537,15 +544,30 @@ namespace CryptoDDZ
         }
         public override string Crypt(string text)
         {//N e - открытый ключ
-
             if (text.Length == 0)
                 return "Нет текста!";
+            
+            string pattern = @"[A-Z]+";
+            Regex reg = new Regex(pattern);
+            if (!reg.IsMatch(text))
+            {
+                return "Текст не соответствует алфавиту A-Z!";
+            }
+            if (text.Length%2>0)
+            {
+                return "Текст содержит нечетное число символов!";
+            }
             if (_N != 0)
             {
                 var upper = text.ToUpper();
 
-                string result = RSA_Endoce(upper, _e, _N);
-
+                string result = "";
+                string help = RSA_Endoce(upper, _e, _N);
+                int num = help.Length;
+                for (int i = 0; i < num - 1; i++)
+                {
+                    result += help[i];
+                }
                 return result;
             }
             return "N = 0";
@@ -553,20 +575,19 @@ namespace CryptoDDZ
 
         private string RSA_Dedoce(string input, long d, long n)
         {
-            input += " ";
             string result = "";
             List<string> helpList = new List<string>(input.Split(' '));
 
             foreach (string item in helpList)
             {
-                BigInteger bi = BigInteger.Pow(Convert.ToInt32(item), (int)d);
+                BigInteger bi = BigInteger.Pow(ulong.Parse(item), (int)d);
+                BigInteger n_ = new BigInteger((int)n);
 
-                bi = bi % (ulong)n;
-                bi = bi % _alphabet.Length;
-                bi--;
-                int index = Convert.ToInt32(bi.ToString());
+                bi = bi % n_;
+                int index1 = (int)(bi % Characters.Length);
+                int index2 = (int)(bi / Characters.Length);
 
-                result += _alphabet[index].ToString();
+                result += Characters[index2].ToString() + Characters[index1].ToString();
             }
 
             return result;
@@ -576,6 +597,28 @@ namespace CryptoDDZ
         {//N d - Закрытый ключ
             if (text.Length == 0)
                 return "Нет текста!";
+
+            string pattern = @"\s+";
+            string target = " ";
+            Regex regex = new Regex(pattern);
+            text = regex.Replace(text, target);
+
+            pattern = @"^\s";
+            target = "";
+            regex = new Regex(pattern);
+            text = regex.Replace(text, target);
+
+            pattern = @"\s$";
+            target = "";
+            regex = new Regex(pattern);
+            text = regex.Replace(text, target);
+
+            pattern = @"^(\d+ {1})+(\d)";
+            regex = new Regex(pattern);
+            if (!regex.IsMatch(text))
+            {
+                return "Текст не соответствует формату";
+            }
             if (_N != 0)
             {
                 string result = RSA_Dedoce(text, _d, _N);
