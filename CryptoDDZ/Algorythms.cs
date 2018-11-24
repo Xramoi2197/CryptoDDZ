@@ -38,6 +38,11 @@ namespace CryptoDDZ
                     _algorythm = new RsaAlgorithm();
                     break;
                 }
+                case "DiffiHelman":
+                {
+                    _algorythm = new DiffiHelmanAlg();
+                    break;
+                }
                 default: return;
             }
             if (_algorythm.Fill(parameters, WriteResult))
@@ -47,26 +52,7 @@ namespace CryptoDDZ
         }
 
         public void DoCrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
-        {
-            //switch (algName)//Сюда необходимо добавить свой алгоритм
-            //{
-            //    case "Example":
-            //    {
-            //        _algorythm = new PresentAlg();                    
-            //        break;
-            //    }
-            //    case "Shenks":
-            //    {
-            //        _algorythm = new ShenksAlgorithm();
-            //        break;
-            //    }
-            //    case "Rsa":
-            //    {
-            //        _algorythm = new RsaAlgorithm();
-            //        break;
-            //    }
-            //    default: return;
-            //}
+        {           
             if (_algorythm?.Name != algName)
             {
                 WriteResult?.Invoke("Сначала необходимо выполнить алгоритм");
@@ -77,25 +63,6 @@ namespace CryptoDDZ
 
         public void DoDecrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
         {
-            //switch (algName)//Сюда необходимо добавить свой алгоритм
-            //{
-            //    case "Example":
-            //    {
-            //        _algorythm = new PresentAlg();
-            //        break;
-            //    }
-            //    case "Shenks":
-            //    {
-            //        _algorythm = new ShenksAlgorithm();
-            //        break;
-            //    }
-            //    case "Rsa":
-            //    {
-            //        _algorythm = new RsaAlgorithm();                    
-            //        break;
-            //    }
-            //    default: return;
-            //}
             if (_algorythm?.Name != algName)
             {
                 WriteResult?.Invoke("Сначала необходимо выполнить алгоритм.");
@@ -626,6 +593,146 @@ namespace CryptoDDZ
                 return result;
             }
             return "N = 0";
+        }
+    }
+
+    class DiffiHelmanAlg : Algorythm
+    {
+        public override event Action<string> WriteResult;
+        private long _g;
+        private long _p;
+        private long _a;
+        private long _b;
+        private long _K;
+
+        public static UInt64 MyPow(long x, long y, long p)
+        {
+            UInt64 result = (UInt64)x;
+            UInt64 uP = (UInt64)p;
+            for (long i = 0; i < y - 1; i++)
+            {
+                result = (result * (UInt64)x) % uP;
+            }
+            return result;
+        }
+
+        public override string Crypt(string text)
+        {
+            return "Не реализовано";
+        }
+
+        public override string DeCrypt(string text)
+        {
+            return "Не реализовано";
+        }
+
+        public override void Do()
+        {
+            var msg = "g=" + _g;
+            WriteResult?.Invoke(msg);
+            msg = "p=" + _p;
+            WriteResult?.Invoke(msg);
+            msg = "a=" + _a;
+            WriteResult?.Invoke(msg);
+            msg = "b=" + _b;
+            WriteResult?.Invoke(msg);
+
+            ulong A = MyPow(_g, _a, _p);
+            msg = "1)\n(1)A=g^a modp=" + A;
+            WriteResult?.Invoke(msg);
+            ulong B = MyPow(_g, _b, _p);
+            msg = "(2)A=g^a modp=" + B;
+            WriteResult?.Invoke(msg);
+            ulong B2 = MyPow((long)B, _a, _p);
+            msg = "2)\n(3)B^a modp=g^ab modp=" + B2;
+            WriteResult?.Invoke(msg);
+            ulong A2 = MyPow((long)A, _b, _p);
+            msg = "(4)A^a modp=g^ab modp=" + A2;
+            WriteResult?.Invoke(msg);
+            if (A2!=B2)
+            {
+                return;
+            }
+            ulong _K = A2;
+            msg = "3)\n(5)K=g^ab modp=" + _K;
+            WriteResult?.Invoke(msg);
+        }
+
+        public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
+        {
+            Name = "DiffiHelman";
+            _g = 0;
+            _p = 0;
+            _a = 0;
+            _b = 0;
+            _K = 0;
+            if (parameters.Count != 4)
+            {
+                return false;
+            }
+            WriteResult += writeAction;
+            string helpStr;
+            parameters.TryGetValue("g", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр g не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _g))
+            {
+                WriteResult?.Invoke("Параметр g не удалось привести к long!");
+                return false;
+            }
+            if (_g <= 0)
+            {
+                WriteResult?.Invoke("Параметр g отрицателен.");
+            }
+            parameters.TryGetValue("p", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр p не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _p))
+            {
+                WriteResult?.Invoke("Параметр p не удалось привести к long!");
+                return false;
+            }
+            if (_p <= 0)
+            {
+                WriteResult?.Invoke("Параметр p отрицателен.");
+            }
+            parameters.TryGetValue("a", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр a не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _a))
+            {
+                WriteResult?.Invoke("Параметр a не удалось привести к long!");
+                return false;
+            }
+            if (_a <= 0)
+            {
+                WriteResult?.Invoke("Параметр a отрицателен.");
+            }
+            parameters.TryGetValue("b", out helpStr);
+            if (helpStr == null)
+            {
+                WriteResult?.Invoke("Параметр b не задан!");
+                return false;
+            }
+            if (!long.TryParse(helpStr, out _b))
+            {
+                WriteResult?.Invoke("Параметр b не удалось привести к long!");
+                return false;
+            }
+            if (_b <= 0)
+            {
+                WriteResult?.Invoke("Параметр b отрицателен.");
+            }
+            return true;
         }
     }
 }

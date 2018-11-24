@@ -25,6 +25,7 @@
             <ComboBoxItem x:Name="Example" Visibility="Collapsed">Пример</ComboBoxItem>
             <ComboBoxItem x:Name="Shenks">Логарифмирование в конечном поле. Алгоритм Шенкса.</ComboBoxItem>
             <ComboBoxItem x:Name="Rsa">Алгоритм Ривеста, Шамира, Адлемана. RSA.</ComboBoxItem>
+            <ComboBoxItem x:Name="DiffiHelman">Алгоритм Диффи-Хелмана.</ComboBoxItem>
         </ComboBox>
         <TextBox x:Name="InfoBox" Grid.Row="1" Grid.Column="0" Margin="10" 
                  FontSize="15" FontFamily="Ariel" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>

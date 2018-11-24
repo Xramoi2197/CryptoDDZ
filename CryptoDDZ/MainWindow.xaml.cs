@@ -73,9 +73,11 @@ namespace CryptoDDZ
             {
                 case "Example":
                 {
-                    _info = "Example text info"; //Info надо будет положить в ресурсы!!!                   
+                    _info = "Example text info"; //Info надо будет положить в ресурсы!!!  
+                    /*Перечисление всех переменных для алгоритма*/
                     _parameters.Add("x", string.Empty);
                     _parameters.Add("y", string.Empty);
+                    /*Перечисление всех переменных цифра(ключ)-номер по порядку, строка-отображение переменной в таблице*/
                     DataGridRowEx newRow = new DataGridRowEx(1, "x", string.Empty);
                     _rowExs.Add(newRow);
                     newRow = new DataGridRowEx(2, "y", string.Empty);
@@ -115,6 +117,26 @@ namespace CryptoDDZ
                     DataGridRowEx newRow = new DataGridRowEx(1, "N", string.Empty);
                     _rowExs.Add(newRow);
                     newRow = new DataGridRowEx(2, "e", string.Empty);
+                    _rowExs.Add(newRow);
+                    _rowExs.Sort();
+                    DataGrid.ItemsSource = _rowExs;
+                    break;
+                }
+                case "DiffiHelman":
+                {
+                    _info = Properties.Resources.DiffiHelman;
+                    _parameters.Add("g", string.Empty);
+                    _parameters.Add("p", string.Empty);
+                    _parameters.Add("a", string.Empty);
+                    _parameters.Add("b", string.Empty);
+
+                    DataGridRowEx newRow = new DataGridRowEx(1, "g", string.Empty);
+                    _rowExs.Add(newRow);
+                    newRow = new DataGridRowEx(2, "p", string.Empty);
+                    _rowExs.Add(newRow);
+                    newRow = new DataGridRowEx(3, "a", string.Empty);
+                    _rowExs.Add(newRow);
+                    newRow = new DataGridRowEx(4, "b", string.Empty);
                     _rowExs.Add(newRow);
                     _rowExs.Sort();
                     DataGrid.ItemsSource = _rowExs;
