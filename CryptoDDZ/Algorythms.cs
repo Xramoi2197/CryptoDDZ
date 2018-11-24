@@ -603,7 +603,6 @@ namespace CryptoDDZ
         private long _p;
         private long _a;
         private long _b;
-        private long _K;
 
         public static UInt64 MyPow(long x, long y, long p)
         {
@@ -653,8 +652,8 @@ namespace CryptoDDZ
             {
                 return;
             }
-            ulong _K = A2;
-            msg = "3)\n(5)K=g^ab modp=" + _K;
+            ulong K = A2;
+            msg = "3)\n(5)K=g^ab modp=" + K;
             WriteResult?.Invoke(msg);
         }
 
@@ -665,7 +664,6 @@ namespace CryptoDDZ
             _p = 0;
             _a = 0;
             _b = 0;
-            _K = 0;
             if (parameters.Count != 4)
             {
                 return false;
