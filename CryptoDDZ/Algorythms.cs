@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Numerics;
 namespace CryptoDDZ
 {
     class Algorythms
@@ -384,7 +385,7 @@ namespace CryptoDDZ
     /*Алгоритм RSA*/
     class RsaAlgorithm : Algorythm
     {
-        public char[] Characters;
+        private string _alphabet;
         public override event Action<string> WriteResult;
         // ReSharper disable once InconsistentNaming
         private long _N;
@@ -461,12 +462,7 @@ namespace CryptoDDZ
         
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
-            Characters = new [] {
-                'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
-                'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С',
-                'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ',
-                'Э', 'Ю', 'Я', ' ', '1', '2', '3', '4', '5', '6', '7',
-                '8', '9', '0' };
+            _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890";
             Name = "Rsa";
             _N = 0;
             _p = 0;
@@ -524,11 +520,11 @@ namespace CryptoDDZ
         {
             string result = "";
 
+
             for (int i = 0; i < text.Length; i++)
             {
-                int index = Array.IndexOf(Characters, text[i]);
-
-                ulong bi = (ulong)Math.Pow(index, e);
+                int index = _alphabet.IndexOf(text.ElementAt(i), 0) + 1;
+                BigInteger bi = BigInteger.Pow(index, (int)e);
 
                 bi = bi % (ulong)n;
 
@@ -555,24 +551,26 @@ namespace CryptoDDZ
             return "N = 0";
         }
 
-        //private string RSA_Dedoce(string input, long d, long n)
-        //{
-        //    string result = "";
-        //    List<string> helpList = new List<string>(input.Split(' '));
+        private string RSA_Dedoce(string input, long d, long n)
+        {
+            input += " ";
+            string result = "";
+            List<string> helpList = new List<string>(input.Split(' '));
 
-        //    foreach (string item in helpList)
-        //    {
-        //        ulong bi = (ulong)Math.Pow(Convert.ToDouble(item), d);
+            foreach (string item in helpList)
+            {
+                BigInteger bi = BigInteger.Pow(Convert.ToInt32(item), (int)d);
 
-        //        bi = bi % (ulong)n;
+                bi = bi % (ulong)n;
+                bi = bi % _alphabet.Length;
+                bi--;
+                int index = Convert.ToInt32(bi.ToString());
 
-        //        int index = Convert.ToInt32(bi.ToString());
+                result += _alphabet[index].ToString();
+            }
 
-        //        result += Characters[index].ToString();
-        //    }
-
-        //    return result;
-        //}
+            return result;
+        }
 
         public override string DeCrypt(string text)
         {//N d - Закрытый ключ
@@ -580,7 +578,7 @@ namespace CryptoDDZ
                 return "Нет текста!";
             if (_N != 0)
             {
-                string result = RSA_Endoce(text, _e, _N);
+                string result = RSA_Dedoce(text, _d, _N);
 
                 return result;
             }
