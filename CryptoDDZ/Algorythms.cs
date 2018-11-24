@@ -167,12 +167,12 @@ namespace CryptoDDZ
 
         public override string Crypt(string text)
         {
-            return "Зашифровали";
+            return "Не реализовано";
         }
 
         public override string DeCrypt(string text)
         {
-            return "Расшифровали";
+            return "Не реализовано";
         }
     }
 
@@ -375,12 +375,12 @@ namespace CryptoDDZ
 
         public override string Crypt(string text)
         {
-            return "Зашифровали";
+            return "Не реализовано";
         }
 
         public override string DeCrypt(string text)
         {
-            return "Расшифровали";
+            return "Не реализовано";
         }
     }
 
