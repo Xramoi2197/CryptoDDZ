@@ -486,7 +486,7 @@ namespace CryptoDDZ
             WriteResult?.Invoke(msg);
         }
 
-        private string RSA_Endoce(string text, long e, long n)
+        private string RSA_Endoce_Bigram(string text, long e, long n)
         {
             string result = "";
             BigInteger bi;
@@ -505,6 +505,27 @@ namespace CryptoDDZ
 
                 result += bi.ToString();
                 if (i != text.Length - 1)
+                    result += ' ';
+            }
+
+            return result;
+        }
+
+        private string RSA_Endoce_Symbol(string text, long e, long n)
+        {
+            string result = "";
+            BigInteger bi;
+            for (int i = 0; i < text.Length; ++i)
+            {
+                int index1 = Characters.IndexOf(text[i]);
+
+                bi = BigInteger.Pow(index1 * Characters.Length, (int)e);
+
+                BigInteger n_ = new BigInteger((int)n);
+                bi = bi % n_;
+
+                result += bi.ToString();
+                if (i != text.Length)
                     result += ' ';
             }
 
@@ -533,7 +554,19 @@ namespace CryptoDDZ
 
             if (parameters["num"] == "1")
             {
-                return "Егор тут надо сделать то же самое но для одного символа";
+                if (_N != 0)
+                {
+                    var upper = text.ToUpper();
+
+                    string result = "";
+                    string help = RSA_Endoce_Symbol(upper, _e, _N);
+                    int num = help.Length;
+                    for (int i = 0; i < num - 1; i++)
+                    {
+                        result += help[i];
+                    }
+                    return result;
+                }
             }
 
             if (parameters["num"] == "2")
@@ -543,7 +576,7 @@ namespace CryptoDDZ
                     var upper = text.ToUpper();
 
                     string result = "";
-                    string help = RSA_Endoce(upper, _e, _N);
+                    string help = RSA_Endoce_Bigram(upper, _e, _N);
                     int num = help.Length;
                     for (int i = 0; i < num - 1; i++)
                     {
@@ -556,7 +589,7 @@ namespace CryptoDDZ
             return "Неправильно выбраны параметры";
         }
 
-        private string RSA_Dedoce(string input, long d, long n)
+        private string RSA_Dedoce_Bigram(string input, long d, long n)
         {
             string result = "";
             List<string> helpList = new List<string>(input.Split(' '));
@@ -576,6 +609,24 @@ namespace CryptoDDZ
             return result;
         }
 
+        private string RSA_Dedoce_Symbol(string input, long d, long n)
+        {
+            string result = "";
+            List<string> helpList = new List<string>(input.Split(' '));
+
+            foreach (string item in helpList)
+            {
+                BigInteger bi = BigInteger.Pow(ulong.Parse(item), (int)d);
+                BigInteger n_ = new BigInteger((int)n);
+
+                bi = bi % n_;
+                int index1 = (int)(bi / Characters.Length);
+
+                result += Characters[index1].ToString();
+            }
+
+            return result;
+        }
         public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {//N d - Закрытый ключ
             if (parameters == null)
@@ -610,14 +661,20 @@ namespace CryptoDDZ
 
             if (parameters["num"] == "1")
             {
-                return "Егор тут надо сделать то же самое но для одного символа";
+                if (_N != 0)
+                {
+                    string result = RSA_Dedoce_Symbol(text, _d, _N);
+
+                    return result;
+                }
+                return "N = 0";
             }
 
             if (parameters["num"] == "2")
             {
                 if (_N != 0)
                 {
-                    string result = RSA_Dedoce(text, _d, _N);
+                    string result = RSA_Dedoce_Bigram(text, _d, _N);
 
                     return result;
                 }
