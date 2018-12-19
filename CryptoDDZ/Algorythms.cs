@@ -533,6 +533,7 @@ namespace CryptoDDZ
         }
         public override string Crypt(string text, Dictionary<string, string> parameters)
         {//N e - открытый ключ
+            WriteResult?.Invoke("Запустили шифрование:");
             if (parameters == null)
             {
                 return "Не заданы параметры";
@@ -631,6 +632,7 @@ namespace CryptoDDZ
         }
         public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {//N d - Закрытый ключ
+            WriteResult?.Invoke("Запустили дешифрование:");
             if (parameters == null)
             {
                 return "Не заданы параметры";
