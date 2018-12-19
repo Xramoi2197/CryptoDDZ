@@ -547,10 +547,7 @@ namespace CryptoDDZ
             {
                 return "Текст не соответствует алфавиту A-Z!";
             }
-            if (text.Length % 2 > 0)
-            {
-                return "Текст содержит нечетное число символов!";
-            }
+            
 
             if (parameters["num"] == "1")
             {
@@ -571,6 +568,11 @@ namespace CryptoDDZ
 
             if (parameters["num"] == "2")
             {
+                if (text.Length % 2 > 0)
+                {
+                    text+="Z";
+                }
+
                 if (_N != 0)
                 {
                     var upper = text.ToUpper();

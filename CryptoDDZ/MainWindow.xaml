@@ -15,10 +15,10 @@
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             
-            <RowDefinition Height="0.4*"></RowDefinition>
+            <RowDefinition x:Name="CryptoRow" Height="0"></RowDefinition>
         </Grid.RowDefinitions>
         <GridSplitter Grid.Row="2" Grid.ColumnSpan="3" Height="2" ShowsPreview="False"
-                      HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="DarkSeaGreen" ResizeDirection="Rows"></GridSplitter>
+                      HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="DarkSeaGreen" ResizeDirection="Rows" ></GridSplitter>
         <ComboBox x:Name="AlgCombo" Grid.Row="0" Grid.ColumnSpan="3" Grid.Column="0" Margin="10,25,10,25" SelectionChanged="AlgCombo_OnSelectionChanged"
                   MaxHeight="40" FontSize="15" FontFamily="Ariel" >
             <!--Сюда добавить еще один <ComboBoxItem></ComboBoxItem> с именем алгоритма-->

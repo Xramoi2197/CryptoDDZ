@@ -66,6 +66,7 @@ namespace CryptoDDZ
         private void ChangeView(string name)
         {
             CryptoBox.Visibility = Visibility.Hidden;
+            CryptoRow.Height = new GridLength(0);
             CryptoBox.Items.Clear();
             _parameters = new Dictionary<string, string>();
             _rowExs = new List<DataGridRowEx>();
@@ -117,6 +118,7 @@ namespace CryptoDDZ
                 case "Rsa":
                 {
                     CryptoBox.Visibility = Visibility.Visible;
+                    CryptoRow.Height = new GridLength(0.3*Height);//Отображаем шифрование
                     CryptoBox.Items.Add("1");
                     CryptoBox.Items.Add("2");
                     _info = Properties.Resources.RSA; //Info надо будет положить в ресурсы!!!                   
