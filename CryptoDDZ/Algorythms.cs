@@ -155,12 +155,13 @@ namespace CryptoDDZ
 
         public static UInt64 MyPow(int x, int y, int p)
         {
-            UInt64 result = (UInt64)x;
-            UInt64 uP = (UInt64)p;
-            for (int i = 0; i < y - 1; i++)
-            {
-                result = (result * (UInt64)x) % uP;
-            }
+            UInt64 result = (UInt64)BigInteger.ModPow(x, y, p);//(UInt64)x;
+            //UInt64 uP = (UInt64)p;
+            //for (int i = 0; i < y - 1; i++)
+            //{
+            //    result = (result * (UInt64)x) % uP;
+            //}
+
             return result;
         }
 
@@ -636,12 +637,7 @@ namespace CryptoDDZ
 
         public static UInt64 MyPow(UInt64 x, UInt64 y, UInt64 p)
         {
-            UInt64 result = (UInt64)x;
-            UInt64 uP = (UInt64)p;
-            for (UInt64 i = 0; i < y - 1; i++)
-            {
-                result = (result * (UInt64)x) % uP;
-            }
+            UInt64 result = (UInt64) BigInteger.ModPow(x, y, p);
             return result;
         }
 
