@@ -51,24 +51,24 @@ namespace CryptoDDZ
             }
         }
 
-        public void DoCrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
+        public void DoCrypt(string algName, string text, Dictionary<string, string> parameters) //Функция выбирает нужный алгоритм и запускает его
         {           
             if (_algorythm?.Name != algName)
             {
                 WriteResult?.Invoke("Сначала необходимо выполнить алгоритм");
                 return;
             }
-            WriteText?.Invoke(_algorythm?.Crypt(text));
+            WriteText?.Invoke(_algorythm?.Crypt(text, parameters));
         }
 
-        public void DoDecrypt(string algName, string text) //Функция выбирает нужный алгоритм и запускает его
+        public void DoDecrypt(string algName, string text, Dictionary<string, string> parameters) //Функция выбирает нужный алгоритм и запускает его
         {
             if (_algorythm?.Name != algName)
             {
                 WriteResult?.Invoke("Сначала необходимо выполнить алгоритм.");
                 return;
             }
-            WriteText?.Invoke(_algorythm?.DeCrypt(text));
+            WriteText?.Invoke(_algorythm?.DeCrypt(text, parameters));
         }
     }
 
@@ -78,8 +78,8 @@ namespace CryptoDDZ
         public abstract event Action<string> WriteResult; //Event для вывода на экран
         public abstract bool Fill(Dictionary<string, string> parameters, Action<string> writeAction); //Функция заполнения и проверки всех параметров алгоритма
         public abstract void Do(); //Функция выполняет алгоритм и вываодит его в TextBox
-        public abstract string Crypt(string text); //Функция шифрует текст заданным ключем
-        public abstract string DeCrypt(string text); //Функция расшифровывает текст заданным ключем
+        public abstract string Crypt(string text, Dictionary<string, string> parameters); //Функция шифрует текст заданным ключем
+        public abstract string DeCrypt(string text, Dictionary<string, string> parameters); //Функция расшифровывает текст заданным ключем
     }
 
     /*Пример алгоритма*/
@@ -132,12 +132,12 @@ namespace CryptoDDZ
 
         }
 
-        public override string Crypt(string text)
+        public override string Crypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }
 
-        public override string DeCrypt(string text)
+        public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }
@@ -340,12 +340,12 @@ namespace CryptoDDZ
             
         }
 
-        public override string Crypt(string text)
+        public override string Crypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }
 
-        public override string DeCrypt(string text)
+        public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }
@@ -509,35 +509,50 @@ namespace CryptoDDZ
 
             return result;
         }
-        public override string Crypt(string text)
+        public override string Crypt(string text, Dictionary<string, string> parameters)
         {//N e - открытый ключ
+            if (parameters == null)
+            {
+                return "Не заданы параметры";
+            }
+
             if (text.Length == 0)
                 return "Нет текста!";
-            
+
             string pattern = @"[A-Z]+";
             Regex reg = new Regex(pattern);
             if (!reg.IsMatch(text))
             {
                 return "Текст не соответствует алфавиту A-Z!";
             }
-            if (text.Length%2>0)
+            if (text.Length % 2 > 0)
             {
                 return "Текст содержит нечетное число символов!";
             }
-            if (_N != 0)
-            {
-                var upper = text.ToUpper();
 
-                string result = "";
-                string help = RSA_Endoce(upper, _e, _N);
-                int num = help.Length;
-                for (int i = 0; i < num - 1; i++)
-                {
-                    result += help[i];
-                }
-                return result;
+            if (parameters["num"] == "1")
+            {
+                return "Егор тут надо сделать то же самое но для одного символа";
             }
-            return "N = 0";
+
+            if (parameters["num"] == "2")
+            {
+                if (_N != 0)
+                {
+                    var upper = text.ToUpper();
+
+                    string result = "";
+                    string help = RSA_Endoce(upper, _e, _N);
+                    int num = help.Length;
+                    for (int i = 0; i < num - 1; i++)
+                    {
+                        result += help[i];
+                    }
+                    return result;
+                }
+                return "N = 0";
+            }
+            return "Неправильно выбраны параметры";
         }
 
         private string RSA_Dedoce(string input, long d, long n)
@@ -560,8 +575,13 @@ namespace CryptoDDZ
             return result;
         }
 
-        public override string DeCrypt(string text)
+        public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {//N d - Закрытый ключ
+            if (parameters == null)
+            {
+                return "Не заданы параметры";
+            }
+
             if (text.Length == 0)
                 return "Нет текста!";
 
@@ -586,13 +606,23 @@ namespace CryptoDDZ
             {
                 return "Текст не соответствует формату";
             }
-            if (_N != 0)
-            {
-                string result = RSA_Dedoce(text, _d, _N);
 
-                return result;
+            if (parameters["num"] == "1")
+            {
+                return "Егор тут надо сделать то же самое но для одного символа";
             }
-            return "N = 0";
+
+            if (parameters["num"] == "2")
+            {
+                if (_N != 0)
+                {
+                    string result = RSA_Dedoce(text, _d, _N);
+
+                    return result;
+                }
+                return "N = 0";
+            }
+            return "Неправильно выбраны параметры";
         }
     }
 
@@ -615,12 +645,12 @@ namespace CryptoDDZ
             return result;
         }
 
-        public override string Crypt(string text)
+        public override string Crypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }
 
-        public override string DeCrypt(string text)
+        public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {
             return "Не реализовано";
         }

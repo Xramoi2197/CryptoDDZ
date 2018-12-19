@@ -65,9 +65,14 @@ namespace CryptoDDZ
 
         private void ChangeView(string name)
         {
+            CryptoBox.Visibility = Visibility.Hidden;
+            CryptoBox.Items.Clear();
             _parameters = new Dictionary<string, string>();
             _rowExs = new List<DataGridRowEx>();
             RezultBox.Text = string.Empty;
+            EndBox.Text = string.Empty;
+            StartBox.Text = string.Empty;
+            InfoBox.Text = string.Empty;
 
             switch (name) //Сюда необходимо добавть свой алгоритм!!!
             {
@@ -111,6 +116,9 @@ namespace CryptoDDZ
                 }
                 case "Rsa":
                 {
+                    CryptoBox.Visibility = Visibility.Visible;
+                    CryptoBox.Items.Add("1");
+                    CryptoBox.Items.Add("2");
                     _info = Properties.Resources.RSA; //Info надо будет положить в ресурсы!!!                   
                     _parameters.Add("N", string.Empty);
                     _parameters.Add("e", string.Empty);
@@ -173,14 +181,38 @@ namespace CryptoDDZ
         {
             EndBox.Text = string.Empty;
             var text = AlgCombo.SelectedItem as ComboBoxItem;
-            _algorythms.DoCrypt(text?.Name, StartBox.Text);
+            if (text?.Name == "Rsa")
+            {
+                Dictionary<string, string> param = null;
+                if (CryptoBox.SelectedItem != null)
+                {
+                    param = new Dictionary<string, string>();
+                    string it = CryptoBox.SelectedItem.ToString();
+                    param.Add("num", it);
+                }
+                _algorythms.DoCrypt(text?.Name, StartBox.Text, param);
+                return;
+            }
+            _algorythms.DoCrypt(text?.Name, StartBox.Text, null);
         }
 
         private void DeCryptButton_OnClickCryptButton_OnClick(object sender, RoutedEventArgs e)
         {
             EndBox.Text = string.Empty;
             var text = AlgCombo.SelectedItem as ComboBoxItem;
-            _algorythms.DoDecrypt(text?.Name, StartBox.Text);
+            if (text?.Name == "Rsa")
+            {
+                Dictionary<string, string> param = null;
+                if (CryptoBox.SelectedItem != null)
+                {
+                    param = new Dictionary<string, string>();
+                    string it = CryptoBox.SelectedItem.ToString();
+                    param.Add("num", it);
+                }               
+                _algorythms.DoDecrypt(text?.Name, StartBox.Text, param);
+                return;
+            }
+            _algorythms.DoDecrypt(text?.Name, StartBox.Text, null);
         }
     }
 
