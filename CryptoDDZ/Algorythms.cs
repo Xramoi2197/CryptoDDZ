@@ -549,7 +549,7 @@ namespace CryptoDDZ
         }
         public override string Crypt(string text, Dictionary<string, string> parameters)
         {//N e - открытый ключ
-            WriteResult?.Invoke("Запустили шифрование:");
+            WriteResult?.Invoke("\n\nЗапустили шифрование:");
             if (parameters == null)
             {
                 return "Не заданы параметры";
@@ -557,8 +557,8 @@ namespace CryptoDDZ
 
             if (text.Length == 0)
                 return "Нет текста!";
-
-            string pattern = @"[A-Z]+";
+            text = text.ToUpper();
+            string pattern = @"^[A-Z]+$";
             Regex reg = new Regex(pattern);
             if (!reg.IsMatch(text))
             {
@@ -570,10 +570,10 @@ namespace CryptoDDZ
             {
                 if (_N != 0)
                 {
-                    var upper = text.ToUpper();
+                    //var upper = text.ToUpper();
 
                     string result = "";
-                    string help = RSA_Endoce_Symbol(upper, _e, _N);
+                    string help = RSA_Endoce_Symbol(text, _e, _N);
                     int num = help.Length;
                     for (int i = 0; i < num - 1; i++)
                     {
@@ -587,15 +587,16 @@ namespace CryptoDDZ
             {
                 if (text.Length % 2 > 0)
                 {
-                    text+="Z";
+                    WriteResult?.Invoke("Так как символов нечетное количество допишем в конец строки Z.");
+                    text +="Z";
                 }
 
                 if (_N != 0)
                 {
-                    var upper = text.ToUpper();
+                    //var upper = text.ToUpper();
 
                     string result = "";
-                    string help = RSA_Endoce_Bigramm(upper, _e, _N);
+                    string help = RSA_Endoce_Bigramm(text, _e, _N);
                     int num = help.Length;
                     for (int i = 0; i < num - 1; i++)
                     {
@@ -658,7 +659,7 @@ namespace CryptoDDZ
         }
         public override string DeCrypt(string text, Dictionary<string, string> parameters)
         {//N d - Закрытый ключ
-            WriteResult?.Invoke("Запустили дешифрование:");
+            WriteResult?.Invoke("\n\nЗапустили дешифрование:");
             if (parameters == null)
             {
                 return "Не заданы параметры";
