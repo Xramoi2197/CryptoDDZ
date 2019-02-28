@@ -355,7 +355,7 @@ namespace CryptoDDZ
     /*Алгоритм RSA*/
     class RsaAlgorithm : Algorythm
     {
-        string Characters;
+        string _characters;
         public override event Action<string> WriteResult;
         // ReSharper disable once InconsistentNaming
         private long _N;
@@ -432,7 +432,7 @@ namespace CryptoDDZ
         
         public override bool Fill(Dictionary<string, string> parameters, Action<string> writeAction)
         {
-            Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            _characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             Name = "Rsa";
             _N = 0;
             _p = 0;
@@ -494,20 +494,20 @@ namespace CryptoDDZ
             WriteResult?.Invoke("Для каждой пары символов считаем:");
             for (int i = 0; i < text.Length; i += 2)
             {
-                int index1 = Characters.IndexOf(text[i]);
+                int index1 = _characters.IndexOf(text[i]);
                 if (i == text.Length - 1)
                 {
                     WriteResult?.Invoke("\nШифруем один символ с индексом " + index1);
                     bi = BigInteger.Pow(index1, (int)e);
-                    WriteResult?.Invoke("Возводим индекс " + index1 + " умноженный на длину алфавита " + Characters.Length + " в степень e " + e + " = " + bi);
+                    WriteResult?.Invoke("Возводим индекс " + index1 + " умноженный на длину алфавита " + _characters.Length + " в степень e " + e + " = " + bi);
                 }
                 else
                 {
-                    int index2 = Characters.IndexOf(text[i + 1]);
+                    int index2 = _characters.IndexOf(text[i + 1]);
                     WriteResult?.Invoke("\nШифруем два символа: с индексами " + index1 + " " + index2);
-                    bi = BigInteger.Pow(index2 + index1 * Characters.Length, (int)e);
-                    WriteResult?.Invoke("Умножаем индекс первого символа на длину алфавита " + index1 * Characters.Length + " складываем с индексом второго символа " + index2 + " = " + (index1 * Characters.Length + index2));
-                    WriteResult?.Invoke("Возводим сумму " + (index1 * Characters.Length + index2) + " в степень e " + e + " = " + bi);
+                    bi = BigInteger.Pow(index2 + index1 * _characters.Length, (int)e);
+                    WriteResult?.Invoke("Умножаем индекс первого символа на длину алфавита " + index1 * _characters.Length + " складываем с индексом второго символа " + index2 + " = " + (index1 * _characters.Length + index2));
+                    WriteResult?.Invoke("Возводим сумму " + (index1 * _characters.Length + index2) + " в степень e " + e + " = " + bi);
                 }
                 BigInteger n_ = new BigInteger((int)n);
                 bi = bi % n_;
@@ -529,11 +529,11 @@ namespace CryptoDDZ
             WriteResult?.Invoke("Для каждого символа считаем:");
             for (int i = 0; i < text.Length; ++i)
             {
-                int index1 = Characters.IndexOf(text[i]);
+                int index1 = _characters.IndexOf(text[i]);
                 WriteResult?.Invoke("\nИндекс символа в алфавите " + index1);
 
-                bi = BigInteger.Pow(index1 * Characters.Length, (int)e);
-                WriteResult?.Invoke("Возводим индекс " + index1 + " умноженный на длину алфавита " + Characters.Length + " в степень e " + e + " = " + bi);
+                bi = BigInteger.Pow(index1 * _characters.Length, (int)e);
+                WriteResult?.Invoke("Возводим индекс " + index1 + " умноженный на длину алфавита " + _characters.Length + " в степень e " + e + " = " + bi);
                 BigInteger n_ = new BigInteger((int)n);
                 bi = bi % n_;
                 WriteResult?.Invoke("Находим остаток от деления полученного числа на N " + n_ + " = " + bi);
@@ -625,13 +625,13 @@ namespace CryptoDDZ
 
                     bi = bi % n_;
                     WriteResult?.Invoke("Считаем остаток от деления полученного числа на N " + n_ + " = " + bi);
-                    int index2 = (int)(bi % Characters.Length);
-                    int index1 = (int)(bi / Characters.Length);
-                    WriteResult?.Invoke("Делим " + bi + " на размер алфавита " + Characters.Length + " получаем индекс алфавита первого символа " + index1 + " переводим в алфавит " + Characters[index1].ToString());
-                    WriteResult?.Invoke("Берем остаток от деления " + bi + " на размер алфавита " + Characters.Length + " получаем индекс алфавита второго символа " + index2 + " переводим в алфавит " + Characters[index2].ToString());
+                    int index2 = (int)(bi % _characters.Length);
+                    int index1 = (int)(bi / _characters.Length);
+                    WriteResult?.Invoke("Делим " + bi + " на размер алфавита " + _characters.Length + " получаем индекс алфавита первого символа " + index1 + " переводим в алфавит " + _characters[index1].ToString());
+                    WriteResult?.Invoke("Берем остаток от деления " + bi + " на размер алфавита " + _characters.Length + " получаем индекс алфавита второго символа " + index2 + " переводим в алфавит " + _characters[index2].ToString());
 
 
-                    result += Characters[index1].ToString() + Characters[index2].ToString();
+                    result += _characters[index1].ToString() + _characters[index2].ToString();
                     WriteResult?.Invoke("Полученный биграмм записываем в результат " + result);
                 }
                 catch (Exception e)
@@ -659,9 +659,9 @@ namespace CryptoDDZ
                     WriteResult?.Invoke("\nВозводим число " + item + " в степень d " + d);
                     bi = bi % n_;
                     WriteResult?.Invoke("Считаем остаток от деления полученного числа на N " + n_ + " = " + bi);
-                    int index1 = (int)(bi / Characters.Length);
-                    WriteResult?.Invoke("Делим " + bi + " на размер алфавита " + Characters.Length + " получаем индекс алфавита символа " + index1 + " переводим в алфавит " + Characters[index1].ToString());
-                    result += Characters[index1].ToString();
+                    int index1 = (int)(bi / _characters.Length);
+                    WriteResult?.Invoke("Делим " + bi + " на размер алфавита " + _characters.Length + " получаем индекс алфавита символа " + index1 + " переводим в алфавит " + _characters[index1].ToString());
+                    result += _characters[index1].ToString();
                     WriteResult?.Invoke("Полученный символ записываем в результат " + result);
                 }
                 catch (Exception e)
